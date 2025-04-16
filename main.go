@@ -28,8 +28,8 @@ func main() {
 	}
 
 	t1 := textNode{
-		text:     "Some text",
-		textType: BOLD,
+		text:     "Linkt to google",
+		textType: LINK,
 		url:      "http://google.com",
 	}
 
@@ -43,5 +43,10 @@ func main() {
 	fmt.Println(html_node)
 	fmt.Println(parent_node)
 	fmt.Println(leaf_node)
+
+	t1html, err := textNodeToHtmlNode(t1)
+	if err == nil {
+		fmt.Println(t1html)
+	}
 
 }
