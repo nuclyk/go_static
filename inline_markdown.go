@@ -2,14 +2,13 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"slices"
 	"strings"
 )
 
 func splitNodesDelimiter(oldNodes []textNode, delimiter string, textType textType) ([]textNode, error) {
 	newNodes := []textNode{}
 	for _, oldNode := range oldNodes {
-		// fmt.Println(oldNode)
 		if oldNode.textType != TEXT {
 			newNodes = append(newNodes, oldNode)
 			continue
@@ -17,7 +16,6 @@ func splitNodesDelimiter(oldNodes []textNode, delimiter string, textType textTyp
 
 		var splitNodes []textNode
 		sections := strings.Split(oldNode.text, delimiter)
-		fmt.Printf("Sections: %v\n", sections)
 
 		if len(sections)%2 == 0 {
 			return nil, errors.New("invalid markdown, formatted section not closed")
@@ -35,12 +33,7 @@ func splitNodesDelimiter(oldNodes []textNode, delimiter string, textType textTyp
 				splitNodes = append(splitNodes, node)
 			}
 		}
-		fmt.Printf("Split nodes: %v\n", splitNodes)
-		for _, node := range splitNodes {
-			newNodes = append(newNodes, node)
-		}
+		newNodes = slices.Concat(newNodes, splitNodes)
 	}
-	fmt.Println(newNodes)
-
 	return newNodes, nil
 }
