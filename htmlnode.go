@@ -5,21 +5,21 @@ import (
 	"fmt"
 )
 
-type Node interface {
-	AttributesToHTML() string
-	ToHTML() (string, error)
+type node interface {
+	attributestoHTML() string
+	toHTML() (string, error)
 }
 
-// HTMLNode can have children
+// htmlNode can have children
 // Implements Node interface
-type HTMLNode struct {
+type htmlNode struct {
 	tag        string
 	value      string
 	attributes map[string]string
-	children   []Node
+	children   []node
 }
 
-func (hm HTMLNode) AttributesToHTML() string {
+func (hm htmlNode) attributestoHTML() string {
 	if len(hm.attributes) == 0 {
 		return ""
 	}
@@ -31,23 +31,27 @@ func (hm HTMLNode) AttributesToHTML() string {
 	return attr_html
 }
 
-func (hm HTMLNode) ToHTML() (string, error) {
-	return "", errors.New("ToHTML() ot implemented in HTMLNode.")
+func (hm htmlNode) toHTML() (string, error) {
+	return "", errors.New("toHTML() ot implemented in htmlNode.")
 }
 
-func (hm HTMLNode) String() string {
-	return fmt.Sprintf("HTMLNode(%s, %s, %s)", hm.tag, hm.attributes, hm.value)
+func (hm htmlNode) String() string {
+	attrs := ""
+	for k, v := range hm.attributes {
+		attrs += fmt.Sprintf("%s:%s, ", k, v)
+	}
+	return fmt.Sprintf("htmlNode(%s, %s%s)", hm.tag, attrs, hm.value)
 }
 
-// LeafNode, which means it has no children.
+// leafNode, which means it has no children.
 // Implements Node interface.
-type LeafNode struct {
+type leafNode struct {
 	tag        string
 	value      string
 	attributes map[string]string
 }
 
-func (ln LeafNode) AttributesToHTML() string {
+func (ln leafNode) attributestoHTML() string {
 	if len(ln.attributes) == 0 {
 		return ""
 	}
@@ -59,31 +63,35 @@ func (ln LeafNode) AttributesToHTML() string {
 	return attr_html
 }
 
-// LeafNode method that converts LeafNode into HTML string.
+// leafNode method that converts leafNode into HTML string.
 // Returns error if tag or value is not set.
-func (ln LeafNode) ToHTML() (string, error) {
+func (ln leafNode) toHTML() (string, error) {
 	if len(ln.tag) == 0 {
-		return "", errors.New("LeafNode: Invalid HTML: no tag")
+		return "", errors.New("leafNode: Invalid HTML: no tag")
 	}
 	if len(ln.value) == 0 {
-		return "", errors.New("LeafNode: Invalid HTML: no value")
+		return "", errors.New("leafNode: Invalid HTML: no value")
 	}
-	return fmt.Sprintf("<%s %s>%s</%s>", ln.tag, ln.AttributesToHTML(), ln.value, ln.tag), nil
+	return fmt.Sprintf("<%s %s>%s</%s>", ln.tag, ln.attributestoHTML(), ln.value, ln.tag), nil
 }
 
-func (ln LeafNode) String() string {
-	return fmt.Sprintf("LeafNode(%s, %s, %s)", ln.tag, ln.attributes, ln.value)
+func (ln leafNode) String() string {
+	attrs := ""
+	for k, v := range ln.attributes {
+		attrs += fmt.Sprintf("%s:%s, ", k, v)
+	}
+	return fmt.Sprintf("leafNode(%s, %s%s)", ln.tag, attrs, ln.value)
 }
 
-// ParentNode
+// parentNode
 // Implements Node interface
-type ParentNode struct {
+type parentNode struct {
 	tag        string
 	attributes map[string]string
-	children   []Node
+	children   []node
 }
 
-func (pn ParentNode) AttributesToHTML() string {
+func (pn parentNode) attributestoHTML() string {
 	if len(pn.attributes) == 0 {
 		return ""
 	}
@@ -95,24 +103,24 @@ func (pn ParentNode) AttributesToHTML() string {
 	return attr_html
 }
 
-func (pn ParentNode) ToHTML() (string, error) {
+func (pn parentNode) toHTML() (string, error) {
 	if len(pn.tag) == 0 {
-		return "", errors.New("ParentNode: Invalid HTML: no tag")
+		return "", errors.New("parentNode: Invalid HTML: no tag")
 	}
 	if len(pn.children) == 0 {
-		return "", errors.New("ParentNode: Invalid HTML: no children")
+		return "", errors.New("parentNode: Invalid HTML: no children")
 	}
 
 	children_html := ""
 	for _, child := range pn.children {
-		html, err := child.ToHTML()
+		html, err := child.toHTML()
 		if err == nil {
 			children_html += html
 		}
 	}
-	return fmt.Sprintf("<%s %s>%s</%s>", pn.tag, pn.AttributesToHTML(), children_html, pn.tag), nil
+	return fmt.Sprintf("<%s %s>%s</%s>", pn.tag, pn.attributestoHTML(), children_html, pn.tag), nil
 }
 
-func (pn ParentNode) String() string {
-	return fmt.Sprintf("ParentNode(%s, children: %s, %s)", pn.tag, pn.children, pn.attributes)
+func (pn parentNode) String() string {
+	return fmt.Sprintf("parentNode(%s, children: %s, %s)", pn.tag, pn.children, pn.attributes)
 }

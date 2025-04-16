@@ -3,31 +3,45 @@ package main
 import "fmt"
 
 func main() {
-	html_node := HTMLNode{
+	html_node := htmlNode{
 		tag:   "div",
 		value: "Some sort of text.",
 		attributes: map[string]string{
 			"class": "bg-color",
 		},
-		children: []Node{},
+		children: []node{},
 	}
 
-	leaf_node := LeafNode{
+	leaf_node := leafNode{
 		tag:   "a",
 		value: "Link to google",
 		attributes: map[string]string{
-			"href": "https://google.com",
+			"href":  "https://google.com",
+			"class": "beautify",
 		},
 	}
 
-	parent_node := ParentNode{
+	parent_node := parentNode{
 		tag:        "div",
 		attributes: nil,
-		children:   []Node{leaf_node},
+		children:   []node{leaf_node},
 	}
 
+	t1 := textNode{
+		text:     "Some text",
+		textType: BOLD,
+		url:      "http://google.com",
+	}
+
+	t2 := textNode{
+		text:     "Some text",
+		textType: BOLD,
+		url:      "http://google.com",
+	}
+
+	fmt.Println(t1.equals(t2))
 	fmt.Println(html_node)
-	fmt.Println(leaf_node.ToHTML())
-	fmt.Println(parent_node.ToHTML())
+	fmt.Println(parent_node)
+	fmt.Println(leaf_node)
 
 }
