@@ -34,10 +34,16 @@ func main() {
 	}
 
 	t2 := textNode{
-		text:     "Some text",
-		textType: BOLD,
-		url:      "http://google.com",
+		text:     "Some **bolded** text with some _italics_ and `code`.",
+		textType: TEXT,
+		url:      "",
 	}
+
+	// t3 := textNode{
+	// 	text:     "Just a normal text",
+	// 	textType: TEXT,
+	// 	url:      "",
+	// }
 
 	fmt.Println(t1.equals(t2))
 	fmt.Println(html_node)
@@ -47,6 +53,16 @@ func main() {
 	t1html, err := textNodeToHtmlNode(t1)
 	if err == nil {
 		fmt.Println(t1html)
+	}
+
+	testNodes := []textNode{}
+	testNodes = append(testNodes, t2)
+	testNodes, err = splitNodesDelimiter(testNodes, "**", BOLD)
+	testNodes, err = splitNodesDelimiter(testNodes, "_", ITALIC)
+	testNodes, err = splitNodesDelimiter(testNodes, "`", CODE)
+	if err == nil {
+		fmt.Println("FINAL VERSION")
+		fmt.Println(testNodes)
 	}
 
 }
