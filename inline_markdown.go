@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"regexp"
 	"slices"
 	"strings"
 )
@@ -36,4 +37,36 @@ func splitNodesDelimiter(oldNodes []textNode, delimiter string, textType textTyp
 		newNodes = slices.Concat(newNodes, splitNodes)
 	}
 	return newNodes, nil
+}
+
+// func spiltNodesImage(oldNodes []textNode) {
+// 	newNodes = []textNode{}
+// 	for _, oldNode := range oldNodes {
+// 		if oldNode.textType != TEXT {
+// 			newNodes = append(newNodes, oldNode)
+// 			continue
+// 		}
+// 	}
+// }
+
+func extractMarkdownImages(text string) [][]string {
+	re := regexp.MustCompile(`!\[([^\[\]]*)\]\(([^\(\)]*)\)`)
+	found := re.FindAllStringSubmatch(text, -1)
+	var filtered [][]string
+	for _, img := range found {
+		filtered = append(filtered, []string{img[1], img[2]})
+	}
+	return filtered
+}
+
+// Go doesn't support lookbehind in regex
+func extractMarkdownLinks(text string) [][]string {
+	re := regexp.MustCompile(`[^!]\[(.*?)\]\((.*?)\)`)
+
+	found := re.FindAllStringSubmatch(text, -1)
+	var filtered [][]string
+	for _, img := range found {
+		filtered = append(filtered, []string{img[1], img[2]})
+	}
+	return filtered
 }

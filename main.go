@@ -65,4 +65,13 @@ func main() {
 		fmt.Println(testNodes)
 	}
 
+	// image := "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)." +
+	// 	"And this is another one: ![image](https://i.imgur.com/zjjcJKZ.png)"
+	// result := extractMarkdownImages(image)
+	// fmt.Print(result)
+
+	link := string("This is text with a [link](https://boot.dev) and [another link](https://blog.boot.dev)")
+	links := extractMarkdownLinks(link)
+	fmt.Println(links)
+
 }
